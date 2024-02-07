@@ -3,6 +3,7 @@ import sys
 import argparse
 
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 from data_utils import read_csv_file, get_data_from_data_frame
@@ -42,6 +43,15 @@ def do_eda(ARGS):
         axs[col_index].set(ylabel=column)
     plt.show()
     """
+
+    plt.figure()
+    corr_mat = data_frame.corr()
+    sns.heatmap(corr_mat)
+    plt.title("Feature correlation matrix", fontsize=20)
+    plt.xticks(fontsize=20)
+    plt.yticks(fontsize=20)
+    plt.show()
+
     return
 
 def main():
