@@ -74,7 +74,7 @@ def get_classifier(classifier_type):
             "classifier__n_estimators": [100, 200, 500],
         }
     elif classifier_type == "log_reg":
-        classifier = LogisticRegression(max_iter=200, verbose=-1, solver="saga")
+        classifier = LogisticRegression(max_iter=200, solver="saga")
         classifier_params = {
             "classifier__penalty": ["l1", "l2", "elasticnet"],
             "classifier__class_weight": [None, "balanced"],
