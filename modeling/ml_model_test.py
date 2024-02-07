@@ -1,4 +1,7 @@
 import argparse
+
+import mlflow
+import numpy as np
 from sklearn.metrics import classification_report
 
 from ml_model_dev import load_ml_model, train_test_split, read_csv_file
@@ -16,7 +19,7 @@ def test_ml_pipeline(ARGS):
 
 def main():
     file_csv = "dataset/water_potability.csv"
-    pkl_file_name = "trained_models/random_forest.pkl"
+    pkl_file_name = "trained_models/knn_ada_boost"
 
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
