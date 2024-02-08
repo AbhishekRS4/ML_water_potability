@@ -14,9 +14,9 @@
 * The docker container can be deployed using [Dockerfile](Dockerfile)
 * For training and logging the model, use the [modeling/ml_model_dev.py](modeling/ml_model_dev.py) script
 * The FastAPI app deployment code is in [app.py](app.py) script
-* To test the deployed FastAPI app, the [test_post_request.py](test_post_request.py) script can be used
+* To test the deployed FastAPI app on a local machine, the [test_post_request.py](test_post_request.py) script can be used
 
-## Docker deployment instructions on local machine
+## Docker deployment instructions on a local machine
 * To build the container, run the following command
 ```
 docker build -t fastapi_water_potability .
@@ -28,3 +28,4 @@ docker run -p 5000:5000 -t fastapi_water_potability
 
 ## HuggingFace deployment
 * The FastAPI application with appropriate changes has also been deployed to [HuggingFace](https://huggingface.co/spaces/abhishekrs4/ML_water_potability)
+* To test the deployed FastAPI app on HuggingFace, use the [test_post_request.py](https://huggingface.co/spaces/abhishekrs4/ML_water_potability/blob/main/test_post_request.py) script in the HuggingFace repo since the endpoint is different
