@@ -9,7 +9,7 @@ RUN apt-get install -y libgomp1
 # can copy files only from current working directory where docker builds
 # cannot copy files from arbitrary directories
 
-COPY ./trained_models/knn_ada_boost /data/models/knn_ada_boost
+COPY ./trained_models/knn_random_forest /data/models/knn_random_forest
 COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
