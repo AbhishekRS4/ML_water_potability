@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modeling.ml_model_dev &mdash; ML water potability prediction application  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ML water potability prediction application
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">ML_water_potability_fastapi_deployment</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ML water potability prediction application</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">modeling.ml_model_dev</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for modeling.ml_model_dev</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">joblib</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">mlflow</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">lightgbm</span> <span class="k">as</span> <span class="nn">lgbm</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.experimental</span> <span class="kn">import</span> <span class="n">enable_iterative_imputer</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">make_scorer</span>
+<span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">KNNImputer</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">,</span> <span class="n">IterativeImputer</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="n">AdaBoostClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_validate</span><span class="p">,</span> <span class="n">train_test_split</span><span class="p">,</span> <span class="n">GridSearchCV</span><span class="p">,</span> <span class="n">KFold</span>
+
+<span class="kn">from</span> <span class="nn">data_utils</span> <span class="kn">import</span> <span class="n">read_csv_file</span><span class="p">,</span> <span class="n">get_data_from_data_frame</span>
+
+
+<div class="viewcode-block" id="load_mlflow_model"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.load_mlflow_model">[docs]</a><span class="k">def</span> <span class="nf">load_mlflow_model</span><span class="p">(</span><span class="n">dir_mlflow_model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    dir_mlflow_model : str</span>
+<span class="sd">        full direcotry path of the mlflow model</span>
+
+<span class="sd">    -------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    model_pipeline : object</span>
+<span class="sd">        an object of the mlflow sklearn model pipeline</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">mlflow</span><span class="o">.</span><span class="n">sklearn</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">dir_mlflow_model</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model_pipeline</span></div>
+
+<div class="viewcode-block" id="get_imputer"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.get_imputer">[docs]</a><span class="k">def</span> <span class="nf">get_imputer</span><span class="p">(</span><span class="n">imputer_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    imputer_type : str</span>
+<span class="sd">        a string indicating the type of imputer to be used in the pipeline</span>
+
+<span class="sd">    -------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (imputer, imputer_params) : tuple</span>
+<span class="sd">        a tuple of imputer object and a dictionary of the imputer params</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># setup parameter search space for different imputers</span>
+    <span class="n">imputer</span><span class="p">,</span> <span class="n">imputer_params</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">imputer_type</span> <span class="o">==</span> <span class="s2">&quot;simple&quot;</span><span class="p">:</span>
+        <span class="n">imputer</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">()</span>
+        <span class="n">imputer_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;imputer__strategy&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="s2">&quot;most_frequent&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="k">elif</span> <span class="n">imputer_type</span> <span class="o">==</span> <span class="s2">&quot;knn&quot;</span><span class="p">:</span>
+        <span class="n">imputer</span> <span class="o">=</span> <span class="n">KNNImputer</span><span class="p">()</span>
+        <span class="n">imputer_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;imputer__n_neighbors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+            <span class="s2">&quot;imputer__weights&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;distance&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="k">elif</span> <span class="n">imputer_type</span> <span class="o">==</span> <span class="s2">&quot;iterative&quot;</span><span class="p">:</span>
+        <span class="n">imputer</span> <span class="o">=</span> <span class="n">IterativeImputer</span><span class="p">()</span>
+        <span class="n">imputer_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;imputer__initial_strategy&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="s2">&quot;most_frequent&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;imputer__imputation_order&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ascending&quot;</span><span class="p">,</span> <span class="s2">&quot;descending&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unidentified option for arg, imputer_type: </span><span class="si">{</span><span class="n">imputer_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">imputer</span><span class="p">,</span> <span class="n">imputer_params</span></div>
+
+<div class="viewcode-block" id="get_scaler"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.get_scaler">[docs]</a><span class="k">def</span> <span class="nf">get_scaler</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    -------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scaler : object</span>
+<span class="sd">        a scaler object of type StandardScaler</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">scaler</span></div>
+
+<div class="viewcode-block" id="get_pca"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.get_pca">[docs]</a><span class="k">def</span> <span class="nf">get_pca</span><span class="p">(</span><span class="n">max_num_feats</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    max_num_feats : int</span>
+<span class="sd">        an integer indicating the maximum number of features in the dataset</span>
+
+<span class="sd">    -------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (pca, pca_params) : tuple</span>
+<span class="sd">        a tuple of pca object and a dictionary of the pca params</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span>
+    <span class="n">pca_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;pca__n_components&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_num_feats</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">pca</span><span class="p">,</span> <span class="n">pca_params</span></div>
+
+<div class="viewcode-block" id="get_classifier"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.get_classifier">[docs]</a><span class="k">def</span> <span class="nf">get_classifier</span><span class="p">(</span><span class="n">classifier_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    classifier_type : str</span>
+<span class="sd">        a string indicating the type of classifier to be used in the pipeline</span>
+
+<span class="sd">    -------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (classifier, classifier_params) : tuple</span>
+<span class="sd">        a tuple of classifier object and a dictionary of the classifier params</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># setup parameter search space for different classifiers</span>
+    <span class="n">classifier</span><span class="p">,</span> <span class="n">classifier_params</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">classifier_type</span> <span class="o">==</span> <span class="s2">&quot;ada_boost&quot;</span><span class="p">:</span>
+        <span class="n">classifier</span> <span class="o">=</span> <span class="n">AdaBoostClassifier</span><span class="p">()</span>
+        <span class="n">classifier_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;classifier__learning_rate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="k">elif</span> <span class="n">classifier_type</span> <span class="o">==</span> <span class="s2">&quot;log_reg&quot;</span><span class="p">:</span>
+        <span class="n">classifier</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;saga&quot;</span><span class="p">)</span>
+        <span class="n">classifier_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;classifier__penalty&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;l1&quot;</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">,</span> <span class="s2">&quot;elasticnet&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__class_weight&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;balanced&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__C&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__l1_ratio&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="k">elif</span> <span class="n">classifier_type</span> <span class="o">==</span> <span class="s2">&quot;random_forest&quot;</span><span class="p">:</span>
+        <span class="n">classifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+        <span class="n">classifier_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;classifier__n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">250</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__criterion&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;gini&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__min_samples_leaf&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__min_samples_split&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="k">elif</span> <span class="n">classifier_type</span> <span class="o">==</span> <span class="s2">&quot;svc&quot;</span><span class="p">:</span>
+        <span class="n">classifier</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">()</span>
+        <span class="n">classifier_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;classifier__C&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__kernel&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__degree&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="k">elif</span> <span class="n">classifier_type</span> <span class="o">==</span> <span class="s2">&quot;light_gbm&quot;</span><span class="p">:</span>
+        <span class="n">classifier</span> <span class="o">=</span> <span class="n">lgbm</span><span class="o">.</span><span class="n">LGBMClassifier</span><span class="p">(</span>
+            <span class="n">boosting_type</span><span class="o">=</span><span class="s2">&quot;gbdt&quot;</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">&quot;binary&quot;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;auc&quot;</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">classifier_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;classifier__num_leaves&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">255</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__learning_rate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__n_estimators&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__reg_lambda&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;classifier__min_data_in_leaf&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unidentified option for arg, classifier_type: </span><span class="si">{</span><span class="n">classifier_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">classifier</span><span class="p">,</span> <span class="n">classifier_params</span></div>
+
+<div class="viewcode-block" id="get_pipeline_params"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.get_pipeline_params">[docs]</a><span class="k">def</span> <span class="nf">get_pipeline_params</span><span class="p">(</span><span class="n">dict_A_params</span><span class="p">,</span> <span class="n">dict_B_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    dict_A_params : dict</span>
+<span class="sd">        a dictionary of params</span>
+<span class="sd">    dict_B_params : dict</span>
+<span class="sd">        another dictionary of params</span>
+
+<span class="sd">    -------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pipeline_params : dict</span>
+<span class="sd">        a merged dictionary of the two input dictionaries</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pipeline_params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">dict_A_params</span><span class="p">,</span> <span class="o">**</span><span class="n">dict_B_params</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">pipeline_params</span></div>
+
+<div class="viewcode-block" id="train_model"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.train_model">[docs]</a><span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">df_train</span><span class="p">,</span> <span class="n">df_test</span><span class="p">,</span> <span class="n">imputer_type</span><span class="p">,</span> <span class="n">classifier_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ---------</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    df_train : pd.DataFrame</span>
+<span class="sd">        pandas dataframe for train set</span>
+<span class="sd">    df_train : pd.DataFrame</span>
+<span class="sd">        pandas dataframe for test set</span>
+<span class="sd">    imputer_type : str</span>
+<span class="sd">        a string indicating the imputer type to be used in the pipeline</span>
+<span class="sd">    classifier_type : str</span>
+<span class="sd">        a string indicating the classifier type to be used in the pipeline</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get data arrays from the data frame for train and test sets</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span> <span class="o">=</span> <span class="n">get_data_from_data_frame</span><span class="p">(</span><span class="n">df_train</span><span class="p">)</span>
+    <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">get_data_from_data_frame</span><span class="p">(</span><span class="n">df_test</span><span class="p">)</span>
+
+    <span class="c1"># get imputer and its params</span>
+    <span class="n">imputer</span><span class="p">,</span> <span class="n">imputer_params</span> <span class="o">=</span> <span class="n">get_imputer</span><span class="p">(</span><span class="n">imputer_type</span><span class="p">)</span>
+
+    <span class="c1"># get classifier and its params</span>
+    <span class="n">classifier</span><span class="p">,</span> <span class="n">classifier_params</span> <span class="o">=</span> <span class="n">get_classifier</span><span class="p">(</span><span class="n">classifier_type</span><span class="p">)</span>
+
+    <span class="c1"># get the pipeline params</span>
+    <span class="n">pipeline_params</span> <span class="o">=</span> <span class="n">get_pipeline_params</span><span class="p">(</span><span class="n">imputer_params</span><span class="p">,</span> <span class="n">classifier_params</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+    <span class="c1"># build the model pipeline</span>
+    <span class="k">if</span> <span class="n">classifier_type</span> <span class="o">==</span> <span class="s2">&quot;svc&quot;</span> <span class="ow">or</span> <span class="n">classifier_type</span> <span class="o">==</span> <span class="s2">&quot;log_reg&quot;</span><span class="p">:</span>
+        <span class="n">scaler</span> <span class="o">=</span> <span class="n">get_scaler</span><span class="p">()</span>
+        <span class="n">pca</span><span class="p">,</span> <span class="n">pca_params</span> <span class="o">=</span> <span class="n">get_pca</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Started training the model with the imputer: </span><span class="si">{</span><span class="n">imputer_type</span><span class="si">}</span><span class="s2">, preprocessing: std_scaler + pca, classifier: </span><span class="si">{</span><span class="n">classifier_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s2">&quot;imputer&quot;</span><span class="p">,</span> <span class="n">imputer</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;scaler&quot;</span><span class="p">,</span> <span class="n">scaler</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;pca&quot;</span><span class="p">,</span> <span class="n">pca</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;classifier&quot;</span><span class="p">,</span> <span class="n">classifier</span><span class="p">)])</span>
+        <span class="n">pipeline_params</span> <span class="o">=</span> <span class="n">get_pipeline_params</span><span class="p">(</span><span class="n">pipeline_params</span><span class="p">,</span> <span class="n">pca_params</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Started training the model with the imputer: </span><span class="si">{</span><span class="n">imputer_type</span><span class="si">}</span><span class="s2">, classifier: </span><span class="si">{</span><span class="n">classifier_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s2">&quot;imputer&quot;</span><span class="p">,</span> <span class="n">imputer</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;classifier&quot;</span><span class="p">,</span> <span class="n">classifier</span><span class="p">)])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model pipeline params space: &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">pipeline_params</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="c1"># setup grid search with k-fold cross validation</span>
+    <span class="n">k_fold_cv</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">grid_cv</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">pipeline_params</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">k_fold_cv</span><span class="p">)</span>
+    <span class="n">grid_cv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+
+    <span class="c1"># get the cross validation score and the params for the best estimator</span>
+    <span class="n">cv_best_estimator</span> <span class="o">=</span> <span class="n">grid_cv</span><span class="o">.</span><span class="n">best_estimator_</span>
+    <span class="n">cv_best_f1</span> <span class="o">=</span> <span class="n">grid_cv</span><span class="o">.</span><span class="n">best_score_</span>
+    <span class="n">cv_best_params</span> <span class="o">=</span> <span class="n">grid_cv</span><span class="o">.</span><span class="n">best_params_</span>
+
+    <span class="c1"># predict and compute train set metrics</span>
+    <span class="n">Y_train_pred</span> <span class="o">=</span> <span class="n">cv_best_estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">train_f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_train_pred</span><span class="p">)</span>
+    <span class="n">train_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_train_pred</span><span class="p">)</span>
+
+    <span class="c1"># predict and compute test set metrics</span>
+    <span class="n">Y_test_pred</span> <span class="o">=</span> <span class="n">cv_best_estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">test_f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Y_test_pred</span><span class="p">)</span>
+    <span class="n">test_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Y_test_pred</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+    <span class="c1"># begin mlflow logging for the best estimator</span>
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">set_experiment</span><span class="p">(</span><span class="s2">&quot;water_potability&quot;</span><span class="p">)</span>
+    <span class="n">experiment</span> <span class="o">=</span> <span class="n">mlflow</span><span class="o">.</span><span class="n">get_experiment_by_name</span><span class="p">(</span><span class="s2">&quot;water_potability&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Started mlflow logging for the best estimator&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">mlflow</span><span class="o">.</span><span class="n">start_run</span><span class="p">(</span><span class="n">experiment_id</span><span class="o">=</span><span class="n">experiment</span><span class="o">.</span><span class="n">experiment_id</span><span class="p">):</span>
+        <span class="c1"># log the model and the metrics</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">sklearn</span><span class="o">.</span><span class="n">log_model</span><span class="p">(</span><span class="n">cv_best_estimator</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">imputer_type</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">classifier_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">sklearn</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">cv_best_estimator</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">imputer_type</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">classifier_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_params</span><span class="p">(</span><span class="n">cv_best_params</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;cv_f1_score&quot;</span><span class="p">,</span> <span class="n">cv_best_f1</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;train_f1_score&quot;</span><span class="p">,</span> <span class="n">train_f1</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;train_acc_score&quot;</span><span class="p">,</span> <span class="n">train_acc</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;test_f1_score&quot;</span><span class="p">,</span> <span class="n">test_f1</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;test_acc_score&quot;</span><span class="p">,</span> <span class="n">test_acc</span><span class="p">)</span>
+    <span class="c1"># end mlflow logging</span>
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">end_run</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completed mlflow logging for the best estimator&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="init_and_train_model"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.init_and_train_model">[docs]</a><span class="k">def</span> <span class="nf">init_and_train_model</span><span class="p">(</span><span class="n">ARGS</span><span class="p">):</span>
+    <span class="n">df_csv</span> <span class="o">=</span> <span class="n">read_csv_file</span><span class="p">(</span><span class="n">ARGS</span><span class="o">.</span><span class="n">file_csv</span><span class="p">)</span>
+    <span class="n">df_train</span><span class="p">,</span> <span class="n">df_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df_csv</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="n">num_samples_train</span> <span class="o">=</span> <span class="n">df_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">num_samples_test</span> <span class="o">=</span> <span class="n">df_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Num samples after splitting the dataset&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;train: </span><span class="si">{</span><span class="n">num_samples_train</span><span class="si">}</span><span class="s2">, test: </span><span class="si">{</span><span class="n">num_samples_test</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A few samples from train data&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">df_train</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">ARGS</span><span class="o">.</span><span class="n">is_train</span><span class="p">:</span>
+        <span class="n">train_model</span><span class="p">(</span><span class="n">df_train</span><span class="p">,</span> <span class="n">df_test</span><span class="p">,</span> <span class="n">ARGS</span><span class="o">.</span><span class="n">imputer_type</span><span class="p">,</span> <span class="n">ARGS</span><span class="o">.</span><span class="n">classifier_type</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../modeling.html#modeling.ml_model_dev.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">file_csv</span> <span class="o">=</span> <span class="s2">&quot;dataset/water_potability.csv&quot;</span>
+    <span class="n">classifier_type</span> <span class="o">=</span> <span class="s2">&quot;ada_boost&quot;</span>
+    <span class="n">imputer_type</span> <span class="o">=</span> <span class="s2">&quot;knn&quot;</span>
+    <span class="n">is_train</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentDefaultsHelpFormatter</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--file_csv&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">file_csv</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;full path to dataset csv file&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--is_train&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">is_train</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;to train or not&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--classifier_type&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">classifier_type</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ada_boost&quot;</span><span class="p">,</span> <span class="s2">&quot;log_reg&quot;</span><span class="p">,</span> <span class="s2">&quot;random_forest&quot;</span><span class="p">,</span> <span class="s2">&quot;svc&quot;</span><span class="p">,</span> <span class="s2">&quot;light_gbm&quot;</span><span class="p">],</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;classifier to be used in the training model pipeline&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--imputer_type&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">imputer_type</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;simple&quot;</span><span class="p">,</span> <span class="s2">&quot;knn&quot;</span><span class="p">,</span> <span class="s2">&quot;iterative&quot;</span><span class="p">],</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;imputer to be used in the training model pipeline&quot;</span><span class="p">)</span>
+
+    <span class="n">ARGS</span><span class="p">,</span> <span class="n">unparsed</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+    <span class="n">init_and_train_model</span><span class="p">(</span><span class="n">ARGS</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AbhishekRS4.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modeling package &mdash; ML water potability prediction application  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="test_post_request module" href="test_post_request.html" />
+    <link rel="prev" title="config module" href="config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ML water potability prediction application
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ML_water_potability_fastapi_deployment</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">modeling package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling.data_utils">modeling.data_utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.data_utils.get_data_from_data_frame"><code class="docutils literal notranslate"><span class="pre">get_data_from_data_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.data_utils.get_dict_nan_counts_per_col"><code class="docutils literal notranslate"><span class="pre">get_dict_nan_counts_per_col()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.data_utils.read_csv_file"><code class="docutils literal notranslate"><span class="pre">read_csv_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling.eda">modeling.eda module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.eda.do_eda"><code class="docutils literal notranslate"><span class="pre">do_eda()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.eda.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling.ml_model_dev">modeling.ml_model_dev module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.get_classifier"><code class="docutils literal notranslate"><span class="pre">get_classifier()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.get_imputer"><code class="docutils literal notranslate"><span class="pre">get_imputer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.get_pca"><code class="docutils literal notranslate"><span class="pre">get_pca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.get_pipeline_params"><code class="docutils literal notranslate"><span class="pre">get_pipeline_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.get_scaler"><code class="docutils literal notranslate"><span class="pre">get_scaler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.init_and_train_model"><code class="docutils literal notranslate"><span class="pre">init_and_train_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.load_mlflow_model"><code class="docutils literal notranslate"><span class="pre">load_mlflow_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_dev.train_model"><code class="docutils literal notranslate"><span class="pre">train_model()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling.ml_model_test">modeling.ml_model_test module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_test.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modeling.ml_model_test.test_ml_pipeline"><code class="docutils literal notranslate"><span class="pre">test_ml_pipeline()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modeling">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="test_post_request.html">test_post_request module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ML water potability prediction application</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ML_water_potability_fastapi_deployment</a></li>
+      <li class="breadcrumb-item active">modeling package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modeling.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modeling-package">
+<h1>modeling package<a class="headerlink" href="#modeling-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-modeling.data_utils">
+<span id="modeling-data-utils-module"></span><h2>modeling.data_utils module<a class="headerlink" href="#module-modeling.data_utils" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.data_utils.get_data_from_data_frame">
+<span class="sig-prename descclassname"><span class="pre">modeling.data_utils.</span></span><span class="sig-name descname"><span class="pre">get_data_from_data_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/data_utils.html#get_data_from_data_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.data_utils.get_data_from_data_frame" title="Permalink to this definition"></a></dt>
+<dd><section id="arguments">
+<h3>Arguments<a class="headerlink" href="#arguments" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>data_frame<span class="classifier">pd.DataFrame</span></dt><dd><p>a pandas dataframe of some dataset</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>(X_arr, Y_arr)<span class="classifier">tuple</span></dt><dd><p>a tuple of numpy arrays representing features and labels respsectively</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.data_utils.get_dict_nan_counts_per_col">
+<span class="sig-prename descclassname"><span class="pre">modeling.data_utils.</span></span><span class="sig-name descname"><span class="pre">get_dict_nan_counts_per_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/data_utils.html#get_dict_nan_counts_per_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.data_utils.get_dict_nan_counts_per_col" title="Permalink to this definition"></a></dt>
+<dd><section id="id1">
+<h3>Arguments<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>data_frame<span class="classifier">pd.DataFrame</span></dt><dd><p>a pandas dataframe of some dataset</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h3>Returns<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>dict_nan_counts_per_col<span class="classifier">dict</span></dt><dd><p>a dictionary of NaN counts per column</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.data_utils.read_csv_file">
+<span class="sig-prename descclassname"><span class="pre">modeling.data_utils.</span></span><span class="sig-name descname"><span class="pre">read_csv_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_csv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/data_utils.html#read_csv_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.data_utils.read_csv_file" title="Permalink to this definition"></a></dt>
+<dd><section id="id3">
+<h3>Arguments<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>file_csv<span class="classifier">str</span></dt><dd><p>full path to dataset csv file</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h3>Returns<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>df_csv<span class="classifier">pd.DataFrame</span></dt><dd><p>a pandas dataframe for the csv file</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-modeling.eda">
+<span id="modeling-eda-module"></span><h2>modeling.eda module<a class="headerlink" href="#module-modeling.eda" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.eda.do_eda">
+<span class="sig-prename descclassname"><span class="pre">modeling.eda.</span></span><span class="sig-name descname"><span class="pre">do_eda</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ARGS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/eda.html#do_eda"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.eda.do_eda" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.eda.main">
+<span class="sig-prename descclassname"><span class="pre">modeling.eda.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/eda.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.eda.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-modeling.ml_model_dev">
+<span id="modeling-ml-model-dev-module"></span><h2>modeling.ml_model_dev module<a class="headerlink" href="#module-modeling.ml_model_dev" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.get_classifier">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">get_classifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classifier_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#get_classifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.get_classifier" title="Permalink to this definition"></a></dt>
+<dd><section id="id5">
+<h3>Arguments<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>classifier_type<span class="classifier">str</span></dt><dd><p>a string indicating the type of classifier to be used in the pipeline</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h3>Returns<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>(classifier, classifier_params)<span class="classifier">tuple</span></dt><dd><p>a tuple of classifier object and a dictionary of the classifier params</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.get_imputer">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">get_imputer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imputer_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#get_imputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.get_imputer" title="Permalink to this definition"></a></dt>
+<dd><section id="id7">
+<h3>Arguments<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>imputer_type<span class="classifier">str</span></dt><dd><p>a string indicating the type of imputer to be used in the pipeline</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h3>Returns<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>(imputer, imputer_params)<span class="classifier">tuple</span></dt><dd><p>a tuple of imputer object and a dictionary of the imputer params</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.get_pca">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">get_pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_num_feats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#get_pca"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.get_pca" title="Permalink to this definition"></a></dt>
+<dd><section id="id9">
+<h3>Arguments<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>max_num_feats<span class="classifier">int</span></dt><dd><p>an integer indicating the maximum number of features in the dataset</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h3>Returns<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>(pca, pca_params)<span class="classifier">tuple</span></dt><dd><p>a tuple of pca object and a dictionary of the pca params</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.get_pipeline_params">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">get_pipeline_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_A_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_B_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#get_pipeline_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.get_pipeline_params" title="Permalink to this definition"></a></dt>
+<dd><section id="id11">
+<h3>Arguments<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>dict_A_params<span class="classifier">dict</span></dt><dd><p>a dictionary of params</p>
+</dd>
+<dt>dict_B_params<span class="classifier">dict</span></dt><dd><p>another dictionary of params</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h3>Returns<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>pipeline_params<span class="classifier">dict</span></dt><dd><p>a merged dictionary of the two input dictionaries</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.get_scaler">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">get_scaler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#get_scaler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.get_scaler" title="Permalink to this definition"></a></dt>
+<dd><section id="id13">
+<h3>Returns<a class="headerlink" href="#id13" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>scaler<span class="classifier">object</span></dt><dd><p>a scaler object of type StandardScaler</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.init_and_train_model">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">init_and_train_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ARGS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#init_and_train_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.init_and_train_model" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.load_mlflow_model">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">load_mlflow_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_mlflow_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#load_mlflow_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.load_mlflow_model" title="Permalink to this definition"></a></dt>
+<dd><section id="id14">
+<h3>Arguments<a class="headerlink" href="#id14" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>dir_mlflow_model<span class="classifier">str</span></dt><dd><p>full direcotry path of the mlflow model</p>
+</dd>
+</dl>
+</section>
+<section id="id15">
+<h3>Returns<a class="headerlink" href="#id15" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>model_pipeline<span class="classifier">object</span></dt><dd><p>an object of the mlflow sklearn model pipeline</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.main">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_dev.train_model">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_dev.</span></span><span class="sig-name descname"><span class="pre">train_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imputer_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifier_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_dev.html#train_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_dev.train_model" title="Permalink to this definition"></a></dt>
+<dd><section id="id16">
+<h3>Arguments<a class="headerlink" href="#id16" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>df_train<span class="classifier">pd.DataFrame</span></dt><dd><p>pandas dataframe for train set</p>
+</dd>
+<dt>df_train<span class="classifier">pd.DataFrame</span></dt><dd><p>pandas dataframe for test set</p>
+</dd>
+<dt>imputer_type<span class="classifier">str</span></dt><dd><p>a string indicating the imputer type to be used in the pipeline</p>
+</dd>
+<dt>classifier_type<span class="classifier">str</span></dt><dd><p>a string indicating the classifier type to be used in the pipeline</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-modeling.ml_model_test">
+<span id="modeling-ml-model-test-module"></span><h2>modeling.ml_model_test module<a class="headerlink" href="#module-modeling.ml_model_test" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_test.main">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_test.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_test.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_test.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modeling.ml_model_test.test_ml_pipeline">
+<span class="sig-prename descclassname"><span class="pre">modeling.ml_model_test.</span></span><span class="sig-name descname"><span class="pre">test_ml_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ARGS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modeling/ml_model_test.html#test_ml_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modeling.ml_model_test.test_ml_pipeline" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-modeling">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-modeling" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="config.html" class="btn btn-neutral float-left" title="config module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="test_post_request.html" class="btn btn-neutral float-right" title="test_post_request module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AbhishekRS4.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
