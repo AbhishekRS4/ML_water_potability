@@ -23,11 +23,38 @@ from sklearn.model_selection import cross_validate, train_test_split, GridSearch
 from data_utils import read_csv_file, get_data_from_data_frame
 
 
-def load_ml_model(pkl_file_name):
-    model_pipeline = mlflow.sklearn.load_model(pkl_file_name)
+def load_mlflow_model(dir_mlflow_model):
+    """
+    ---------
+    Arguments
+    ---------
+    dir_mlflow_model : str
+        full direcotry path of the mlflow model
+
+    -------
+    Returns
+    -------
+    model_pipeline : object
+        an object of the mlflow sklearn model pipeline
+    """
+    model_pipeline = mlflow.sklearn.load_model(dir_mlflow_model)
     return model_pipeline
 
 def get_imputer(imputer_type):
+    """
+    ---------
+    Arguments
+    ---------
+    imputer_type : str
+        a string indicating the type of imputer to be used in the pipeline
+
+    -------
+    Returns
+    -------
+    (imputer, imputer_params) : tuple
+        a tuple of imputer object and a dictionary of the imputer params
+    """
+
     # setup parameter search space for different imputers
     imputer, imputer_params = None, None
     if imputer_type == "simple":
@@ -53,10 +80,30 @@ def get_imputer(imputer_type):
     return imputer, imputer_params
 
 def get_scaler():
+    """
+    -------
+    Returns
+    -------
+    scaler : object
+        a scaler object of type StandardScaler
+    """
     scaler = StandardScaler()
     return scaler
 
 def get_pca(max_num_feats):
+    """
+    ---------
+    Arguments
+    ---------
+    max_num_feats : int
+        an integer indicating the maximum number of features in the dataset
+
+    -------
+    Returns
+    -------
+    (pca, pca_params) : tuple
+        a tuple of pca object and a dictionary of the pca params
+    """
     pca = PCA()
     pca_params = {
         "pca__n_components": np.arange(2, max_num_feats+1),
@@ -64,8 +111,21 @@ def get_pca(max_num_feats):
     return pca, pca_params
 
 def get_classifier(classifier_type):
-    # setup parameter search space for different classifiers
+    """
+    ---------
+    Arguments
+    ---------
+    classifier_type : str
+        a string indicating the type of classifier to be used in the pipeline
 
+    -------
+    Returns
+    -------
+    (classifier, classifier_params) : tuple
+        a tuple of classifier object and a dictionary of the classifier params
+    """
+
+    # setup parameter search space for different classifiers
     classifier, classifier_params = None, None
     if classifier_type == "ada_boost":
         classifier = AdaBoostClassifier()
@@ -113,11 +173,39 @@ def get_classifier(classifier_type):
 
     return classifier, classifier_params
 
-def get_pipeline_params(imputer_params, classifier_params):
-    pipeline_params = {**imputer_params, **classifier_params}
+def get_pipeline_params(dict_A_params, dict_B_params):
+    """
+    ---------
+    Arguments
+    ---------
+    dict_A_params : dict
+        a dictionary of params
+    dict_B_params : dict
+        another dictionary of params
+
+    -------
+    Returns
+    -------
+    pipeline_params : dict
+        a merged dictionary of the two input dictionaries
+    """
+    pipeline_params = {**dict_A_params, **dict_B_params}
     return pipeline_params
 
 def train_model(df_train, df_test, imputer_type, classifier_type):
+    """
+    ---------
+    Arguments
+    ---------
+    df_train : pd.DataFrame
+        pandas dataframe for train set
+    df_train : pd.DataFrame
+        pandas dataframe for test set
+    imputer_type : str
+        a string indicating the imputer type to be used in the pipeline
+    classifier_type : str
+        a string indicating the classifier type to be used in the pipeline
+    """
     # get data arrays from the data frame for train and test sets
     X_train, Y_train = get_data_from_data_frame(df_train)
     X_test, Y_test = get_data_from_data_frame(df_test)
