@@ -10,6 +10,7 @@
 * For the ML application development, training, and management; MLFlow has been utilized
 * For deployment, an API has been developed and deployed using FastAPI and docker
 * For the training, the dataset is split into 90% - 10% for train and test sets respectively
+* For getting the latest model from the mlflow logs for production, use the script [get_model_for_production.py](get_model_for_production.py)
 * The python packages are listed in [requirements.txt](requirements.txt)
 * The docker container can be deployed using [Dockerfile](Dockerfile)
 * For training and logging the model, use the [modeling/ml_model_dev.py](modeling/ml_model_dev.py) script
