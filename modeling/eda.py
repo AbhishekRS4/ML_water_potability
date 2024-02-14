@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 from data_utils import read_csv_file, get_data_from_data_frame
 
+
 def do_eda(ARGS):
     data_frame = read_csv_file(ARGS.file_csv)
     label_counts = dict(data_frame[ARGS.target_column].value_counts())
@@ -54,6 +55,7 @@ def do_eda(ARGS):
 
     return
 
+
 def main():
     file_csv = "dataset/water_potability.csv"
     target_column = "Potability"
@@ -61,13 +63,19 @@ def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument("--file_csv", default=file_csv,
-        type=str, help="full path to dataset csv file")
-    parser.add_argument("--target_column", default=target_column,
-        type=str, help="target label for which the EDA needs to be done")
+    parser.add_argument(
+        "--file_csv", default=file_csv, type=str, help="full path to dataset csv file"
+    )
+    parser.add_argument(
+        "--target_column",
+        default=target_column,
+        type=str,
+        help="target label for which the EDA needs to be done",
+    )
     ARGS, unparsed = parser.parse_known_args()
     do_eda(ARGS)
     return
+
 
 if __name__ == "__main__":
     main()

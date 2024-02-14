@@ -19,6 +19,7 @@ except:
 app = FastAPI()
 logging.basicConfig(level=logging.INFO)
 
+
 class WaterPotabilityDataItem(BaseModel):
     ph: Union[float, None] = np.nan
     Hardness: Union[float, None] = np.nan
@@ -29,6 +30,7 @@ class WaterPotabilityDataItem(BaseModel):
     Organic_carbon: Union[float, None] = np.nan
     Trihalomethanes: Union[float, None] = np.nan
     Turbidity: Union[float, None] = np.nan
+
 
 def predict_pipeline(data_sample):
     """
@@ -47,6 +49,7 @@ def predict_pipeline(data_sample):
     pred_sample = sklearn_pipeline.predict(data_sample)
     return pred_sample
 
+
 @app.get("/info")
 def get_app_info():
     """
@@ -56,11 +59,9 @@ def get_app_info():
     dict_info : dict
         a dictionary with info to be sent as a response to get request
     """
-    dict_info = {
-        "app_name": settings.app_name,
-        "version": settings.version
-    }
+    dict_info = {"app_name": settings.app_name, "version": settings.version}
     return dict_info
+
 
 @app.post("/predict")
 def predict(wpd_item: WaterPotabilityDataItem):

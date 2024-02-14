@@ -7,11 +7,13 @@ from sklearn.model_selection import train_test_split
 
 from modeling.ml_model_dev import read_csv_file
 
+
 class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
+
 
 def send_post_reqest(ARGS):
     df_csv = read_csv_file(ARGS.file_csv)
@@ -24,7 +26,7 @@ def send_post_reqest(ARGS):
     url = "http://0.0.0.0:5000/predict"
     # the endpoint of the post request
 
-    headers = {'Content-type': 'application/json'}
+    headers = {"Content-type": "application/json"}
     # additional headers to indicate the content type of the post request
 
     # perform 20 post requests
@@ -37,6 +39,7 @@ def send_post_reqest(ARGS):
         # print(f"{type(json.loads(result.text))} \n")
     return
 
+
 def main():
     file_csv = "dataset/water_potability.csv"
 
@@ -44,13 +47,15 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-    parser.add_argument("--file_csv", default=file_csv,
-        type=str, help="full path to dataset csv file")
+    parser.add_argument(
+        "--file_csv", default=file_csv, type=str, help="full path to dataset csv file"
+    )
 
     ARGS, unparsed = parser.parse_known_args()
     send_post_reqest(ARGS)
 
     return
+
 
 if __name__ == "__main__":
     main()

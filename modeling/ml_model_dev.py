@@ -18,7 +18,12 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.metrics import accuracy_score, f1_score, make_scorer
 from sklearn.impute import KNNImputer, SimpleImputer, IterativeImputer
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.model_selection import cross_validate, train_test_split, GridSearchCV, KFold
+from sklearn.model_selection import (
+    cross_validate,
+    train_test_split,
+    GridSearchCV,
+    KFold,
+)
 
 from data_utils import read_csv_file, get_data_from_data_frame
 
@@ -39,6 +44,7 @@ def load_mlflow_model(dir_mlflow_model):
     """
     model_pipeline = mlflow.sklearn.load_model(dir_mlflow_model)
     return model_pipeline
+
 
 def get_imputer(imputer_type):
     """
@@ -79,6 +85,7 @@ def get_imputer(imputer_type):
         sys.exit(0)
     return imputer, imputer_params
 
+
 def get_scaler():
     """
     -------
@@ -89,6 +96,7 @@ def get_scaler():
     """
     scaler = StandardScaler()
     return scaler
+
 
 def get_pca(max_num_feats):
     """
@@ -106,9 +114,10 @@ def get_pca(max_num_feats):
     """
     pca = PCA()
     pca_params = {
-        "pca__n_components": np.arange(2, max_num_feats+1),
+        "pca__n_components": np.arange(2, max_num_feats + 1),
     }
     return pca, pca_params
+
 
 def get_classifier(classifier_type):
     """
@@ -159,7 +168,8 @@ def get_classifier(classifier_type):
         }
     elif classifier_type == "light_gbm":
         classifier = lgbm.LGBMClassifier(
-            boosting_type="gbdt", objective="binary", metric="auc", verbosity=-1)
+            boosting_type="gbdt", objective="binary", metric="auc", verbosity=-1
+        )
         classifier_params = {
             "classifier__num_leaves": [15, 31, 63, 127, 255],
             "classifier__learning_rate": [0.1, 0.5, 1, 2],
@@ -172,6 +182,7 @@ def get_classifier(classifier_type):
         sys.exit(0)
 
     return classifier, classifier_params
+
 
 def get_pipeline_params(dict_A_params, dict_B_params):
     """
@@ -191,6 +202,7 @@ def get_pipeline_params(dict_A_params, dict_B_params):
     """
     pipeline_params = {**dict_A_params, **dict_B_params}
     return pipeline_params
+
 
 def train_model(df_train, df_test, imputer_type, classifier_type):
     """
@@ -219,21 +231,32 @@ def train_model(df_train, df_test, imputer_type, classifier_type):
     # get the pipeline params
     pipeline_params = get_pipeline_params(imputer_params, classifier_params)
 
-    print("\n" + "-"*100)
+    print("\n" + "-" * 100)
     # build the model pipeline
     if classifier_type == "svc" or classifier_type == "log_reg":
         scaler = get_scaler()
         pca, pca_params = get_pca(X_train.shape[1])
-        print(f"Started training the model with the imputer: {imputer_type}, preprocessing: std_scaler + pca, classifier: {classifier_type}")
+        print(
+            f"Started training the model with the imputer: {imputer_type}, preprocessing: std_scaler + pca, classifier: {classifier_type}"
+        )
 
-        pipeline = Pipeline([("imputer", imputer), ("scaler", scaler), ("pca", pca), ("classifier", classifier)])
+        pipeline = Pipeline(
+            [
+                ("imputer", imputer),
+                ("scaler", scaler),
+                ("pca", pca),
+                ("classifier", classifier),
+            ]
+        )
         pipeline_params = get_pipeline_params(pipeline_params, pca_params)
     else:
-        print(f"Started training the model with the imputer: {imputer_type}, classifier: {classifier_type}")
+        print(
+            f"Started training the model with the imputer: {imputer_type}, classifier: {classifier_type}"
+        )
         pipeline = Pipeline([("imputer", imputer), ("classifier", classifier)])
     print("Model pipeline params space: ")
     print(pipeline_params)
-    print("-"*100)
+    print("-" * 100)
 
     # setup grid search with k-fold cross validation
     k_fold_cv = KFold(n_splits=5, shuffle=True, random_state=4)
@@ -255,7 +278,7 @@ def train_model(df_train, df_test, imputer_type, classifier_type):
     test_f1 = f1_score(Y_test, Y_test_pred)
     test_acc = accuracy_score(Y_test, Y_test_pred)
 
-    print("\n" + "-"*50)
+    print("\n" + "-" * 50)
     # begin mlflow logging for the best estimator
     mlflow.set_experiment("water_potability")
     experiment = mlflow.get_experiment_by_name("water_potability")
@@ -263,7 +286,9 @@ def train_model(df_train, df_test, imputer_type, classifier_type):
     with mlflow.start_run(experiment_id=experiment.experiment_id):
         # log the model and the metrics
         mlflow.sklearn.log_model(cv_best_estimator, f"{imputer_type}_{classifier_type}")
-        mlflow.sklearn.save_model(cv_best_estimator, f"{imputer_type}_{classifier_type}")
+        mlflow.sklearn.save_model(
+            cv_best_estimator, f"{imputer_type}_{classifier_type}"
+        )
         mlflow.log_params(cv_best_params)
         mlflow.log_metric("cv_f1_score", cv_best_f1)
         mlflow.log_metric("train_f1_score", train_f1)
@@ -273,8 +298,9 @@ def train_model(df_train, df_test, imputer_type, classifier_type):
     # end mlflow logging
     mlflow.end_run()
     print(f"Completed mlflow logging for the best estimator")
-    print("-"*50)
+    print("-" * 50)
     return
+
 
 def init_and_train_model(ARGS):
     df_csv = read_csv_file(ARGS.file_csv)
@@ -283,19 +309,20 @@ def init_and_train_model(ARGS):
     num_samples_train = df_train.shape[0]
     num_samples_test = df_test.shape[0]
 
-    print("\n" + "-"*40)
+    print("\n" + "-" * 40)
     print("Num samples after splitting the dataset")
-    print("-"*40)
+    print("-" * 40)
     print(f"train: {num_samples_train}, test: {num_samples_test}")
 
-    print("\n" + "-"*40)
+    print("\n" + "-" * 40)
     print("A few samples from train data")
-    print("-"*40)
+    print("-" * 40)
     print(df_train.head())
 
     if ARGS.is_train:
         train_model(df_train, df_test, ARGS.imputer_type, ARGS.classifier_type)
     return
+
 
 def main():
     file_csv = "dataset/water_potability.csv"
@@ -307,20 +334,31 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-    parser.add_argument("--file_csv", default=file_csv,
-        type=str, help="full path to dataset csv file")
-    parser.add_argument("--is_train", default=is_train,
-        type=int, choices=[0, 1], help="to train or not")
-    parser.add_argument("--classifier_type", default=classifier_type,
-        type=str, choices=["ada_boost", "log_reg", "random_forest", "svc", "light_gbm"],
-        help="classifier to be used in the training model pipeline")
-    parser.add_argument("--imputer_type", default=imputer_type,
-        type=str, choices=["simple", "knn", "iterative"],
-        help="imputer to be used in the training model pipeline")
+    parser.add_argument(
+        "--file_csv", default=file_csv, type=str, help="full path to dataset csv file"
+    )
+    parser.add_argument(
+        "--is_train", default=is_train, type=int, choices=[0, 1], help="to train or not"
+    )
+    parser.add_argument(
+        "--classifier_type",
+        default=classifier_type,
+        type=str,
+        choices=["ada_boost", "log_reg", "random_forest", "svc", "light_gbm"],
+        help="classifier to be used in the training model pipeline",
+    )
+    parser.add_argument(
+        "--imputer_type",
+        default=imputer_type,
+        type=str,
+        choices=["simple", "knn", "iterative"],
+        help="imputer to be used in the training model pipeline",
+    )
 
     ARGS, unparsed = parser.parse_known_args()
     init_and_train_model(ARGS)
     return
+
 
 if __name__ == "__main__":
     main()

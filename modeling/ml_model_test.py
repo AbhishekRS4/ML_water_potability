@@ -6,6 +6,7 @@ from sklearn.metrics import classification_report
 
 from ml_model_dev import load_mlflow_model, train_test_split, read_csv_file
 
+
 def test_ml_pipeline(ARGS):
     df_csv = read_csv_file(ARGS.file_csv)
     df_train, df_test = train_test_split(df_csv, test_size=0.1, random_state=4)
@@ -17,6 +18,7 @@ def test_ml_pipeline(ARGS):
     print(classification_report(Y_test, Y_pred_test))
     return
 
+
 def main():
     file_csv = "dataset/water_potability.csv"
     dir_mlflow_model = "trained_models/knn_ada_boost"
@@ -25,14 +27,20 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-    parser.add_argument("--file_csv", default=file_csv,
-        type=str, help="full path to dataset csv file")
-    parser.add_argument("--dir_mlflow_model", default=dir_mlflow_model,
-        type=str, help="full path to directory containing mlflow model")
+    parser.add_argument(
+        "--file_csv", default=file_csv, type=str, help="full path to dataset csv file"
+    )
+    parser.add_argument(
+        "--dir_mlflow_model",
+        default=dir_mlflow_model,
+        type=str,
+        help="full path to directory containing mlflow model",
+    )
 
     ARGS, unparsed = parser.parse_known_args()
     test_ml_pipeline(ARGS)
     return
+
 
 if __name__ == "__main__":
     main()
