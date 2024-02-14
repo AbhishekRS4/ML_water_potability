@@ -10,10 +10,10 @@ from pydantic import BaseModel
 from config import settings
 
 try:
-    path_mlflow_model = "./trained_models/knn_random_forest"
+    path_mlflow_model = "./model_for_production/"
     sklearn_pipeline = mlflow.sklearn.load_model(path_mlflow_model)
 except:
-    path_mlflow_model = "/data/models/knn_random_forest"
+    path_mlflow_model = "/data/model_for_production/"
     sklearn_pipeline = mlflow.sklearn.load_model(path_mlflow_model)
 
 app = FastAPI()
