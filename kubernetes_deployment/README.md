@@ -20,7 +20,7 @@ kubectl get deployment
 ```
 kind load docker-image fastapi_water_potability
 ```
-* Setup the deployment
+* Setup the deployment, the config for deployment is available in [deployment.yaml](deployment.yaml)
 ```
 kubectl apply -f kubernetes_deployment/deployment.yaml
 ```
@@ -30,7 +30,7 @@ kubectl get pod
 kubectl port-forward <pod_name> 5000:5000
 python3 test_post_request.py
 ```
-* Setup the service
+* Setup the service, the config for service is available in [service.yaml](service.yaml)
 ```
 kubectl apply -f kubernetes_deployment/service.yaml
 ```
