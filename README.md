@@ -31,6 +31,10 @@ docker run -p 5000:5000 -t fastapi_water_potability
 ```
 
 
+## Kubernetes deployment instructions on a local machine
+* To deploy the container on a kubernetes cluster, refer [kubernetes_deployment/README.md](kubernetes_deployment/README.md)
+
+
 ## HuggingFace deployment
 * The FastAPI application with appropriate changes has also been deployed to [HuggingFace](https://huggingface.co/spaces/abhishekrs4/ML_water_potability)
 * To test the deployed FastAPI app on HuggingFace, use the [test_post_request.py](https://huggingface.co/spaces/abhishekrs4/ML_water_potability/blob/main/test_post_request.py) script in the HuggingFace repo since the endpoint is different
