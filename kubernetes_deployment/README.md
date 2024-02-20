@@ -1,6 +1,9 @@
 # Deployment with kubernetes (locally)
 
-## Deploy the docker image for the FastAPI ML application with kubernetes
+## Deployment to kubernetes cluster
+* The 2 config files [deployment.yaml](deployment.yaml) and [service.yaml](service.yaml) can be used for deploying to kubernetes cluster
+
+## Instructions to setup kubernetes cluster (locally) and deploying the docker image with the FastAPI ML application to the kubernetes cluster
 * Install [kubectl](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html) and [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)
 * Setup a kind cluster with the following command
 ```
