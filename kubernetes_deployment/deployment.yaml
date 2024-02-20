@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-water-potability-deployment
+  # do not use _, instead use -
+spec:
+  replicas: 1
+  selector:
+  # all pods with app="fastapi_water_potability" belong to this deployment
+    matchLabels:
+      app: fastapi-water-potability
+  template:
+  # each pod gets label app="fastapi_water_potability"
+    metadata:
+      labels:
+        app: fastapi-water-potability
+    spec:
+      containers:
+      - name: fastapi-water-potability-pod
+        image: fastapi_water_potability:latest
+        imagePullPolicy: Never
+        # set image pull policy to never whenever use image:latest
+        # otherwise, by default it tries to pull image from docker.io
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
