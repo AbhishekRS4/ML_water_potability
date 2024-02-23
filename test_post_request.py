@@ -5,7 +5,7 @@ import argparse
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from modeling.ml_model_dev import read_csv_file
+from modeling.data_utils import WaterPotabilityDataLoader
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -16,11 +16,11 @@ class NumpyEncoder(json.JSONEncoder):
 
 
 def send_post_reqest(ARGS):
-    df_csv = read_csv_file(ARGS.file_csv)
-
-    df_train, df_test = train_test_split(df_csv, test_size=0.1, random_state=4)
-    list_cols = df_train.columns[:-1]
-    X_test, Y_test = df_test.to_numpy()[:, :-1], df_test.to_numpy()[:, -1:]
+    water_pot_dataset = WaterPotabilityDataLoader(ARGS.file_csv)
+    water_pot_dataset.read_csv_file()
+    water_pot_dataset.split_data()
+    list_cols = water_pot_dataset.df_csv.columns[:-1]
+    X_test, Y_test = water_pot_dataset.get_data_from_data_frame(which_set="test")
     print(X_test.shape)
 
     url = "http://0.0.0.0:5000/predict"
