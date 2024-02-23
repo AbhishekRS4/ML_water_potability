@@ -158,9 +158,7 @@ class ClassificationPipeline:
         elif transformer_type == "power_yeo_johnson":
             self._transformer = PowerTransformer(method="yeo-johnson")
         else:
-            print(
-                f"unidentified option for arg, transformer_type: {transformer_type}"
-            )
+            print(f"unidentified option for arg, transformer_type: {transformer_type}")
             sys.exit(0)
         return
 
@@ -320,7 +318,12 @@ class ClassificationPipeline:
 
 
 def train_model(
-    water_pot_dataset, imputer_type, preprocessor_type, transformer_type, classifier_type, is_pca=False
+    water_pot_dataset,
+    imputer_type,
+    preprocessor_type,
+    transformer_type,
+    classifier_type,
+    is_pca=False,
 ):
     """
     ---------
