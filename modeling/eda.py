@@ -6,11 +6,13 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from data_utils import read_csv_file, get_data_from_data_frame
+from data_utils import WaterPotabilityDataLoader
 
 
 def do_eda(ARGS):
-    data_frame = read_csv_file(ARGS.file_csv)
+    water_pot_dataset = WaterPotabilityDataLoader(ARGS.file_csv)
+    water_pot_dataset.read_csv_file()
+    data_frame = water_pot_dataset.df_csv
     label_counts = dict(data_frame[ARGS.target_column].value_counts())
     # print(label_counts)
 
