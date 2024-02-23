@@ -4,14 +4,15 @@ import mlflow
 import numpy as np
 from sklearn.metrics import classification_report
 
-from ml_model_dev import load_mlflow_model, train_test_split, read_csv_file
+from data_utils import WaterPotabilityDataLoader
+from ml_model_dev import load_mlflow_model
 
 
 def test_ml_pipeline(ARGS):
-    df_csv = read_csv_file(ARGS.file_csv)
-    df_train, df_test = train_test_split(df_csv, test_size=0.1, random_state=4)
-    arr_test = df_test.to_numpy()
-    X_test, Y_test = arr_test[:, :-1], arr_test[:, -1:].reshape(-1)
+    water_pot_dataset = WaterPotabilityDataLoader(ARGS.file_csv)
+    water_pot_dataset.read_csv_file()
+    water_pot_dataset.split_data()
+    X_test, Y_test = water_pot_dataset.get_data_from_data_frame(which_set="test")
 
     model_pipeline = load_mlflow_model(ARGS.dir_mlflow_model)
     Y_pred_test = model_pipeline.predict(X_test)
@@ -21,7 +22,7 @@ def test_ml_pipeline(ARGS):
 
 def main():
     file_csv = "dataset/water_potability.csv"
-    dir_mlflow_model = "trained_models/knn_ada_boost"
+    dir_mlflow_model = "model_for_production"
 
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
