@@ -6,5 +6,6 @@ ML_water_potability_fastapi_deployment
 
    app
    config
+   get_model_for_production
    modeling
    test_post_request

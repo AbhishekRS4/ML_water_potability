@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ML_water_potability_fastapi_deployment &mdash; ML water potability prediction application  documentation</title>
+  <title>ML_water_potability_fastapi_deployment &mdash; WaterPotability  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="app module" href="app.html" />
-    <link rel="prev" title="Welcome to ML water potability prediction application’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to WaterPotability’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -34,7 +34,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            ML water potability prediction application
+            WaterPotability
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -49,6 +49,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ML_water_potability_fastapi_deployment</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_model_for_production.html">get_model_for_production module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html">modeling package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="test_post_request.html">test_post_request module</a></li>
 </ul>
@@ -61,7 +62,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">ML water potability prediction application</a>
+          <a href="index.html">WaterPotability</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -95,12 +96,21 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="get_model_for_production.html">get_model_for_production module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_model_for_production.html#get_model_for_production.get_model_for_prod"><code class="docutils literal notranslate"><span class="pre">get_model_for_prod()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_model_for_production.html#get_model_for_production.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="modeling.html">modeling package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#module-modeling.data_utils">modeling.data_utils module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.data_utils.get_data_from_data_frame"><code class="docutils literal notranslate"><span class="pre">get_data_from_data_frame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.data_utils.WaterPotabilityDataLoader"><code class="docutils literal notranslate"><span class="pre">WaterPotabilityDataLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.data_utils.WaterPotabilityDataLoader.get_data_from_data_frame"><code class="docutils literal notranslate"><span class="pre">WaterPotabilityDataLoader.get_data_from_data_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.data_utils.WaterPotabilityDataLoader.read_csv_file"><code class="docutils literal notranslate"><span class="pre">WaterPotabilityDataLoader.read_csv_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.data_utils.WaterPotabilityDataLoader.split_data"><code class="docutils literal notranslate"><span class="pre">WaterPotabilityDataLoader.split_data()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.data_utils.get_dict_nan_counts_per_col"><code class="docutils literal notranslate"><span class="pre">get_dict_nan_counts_per_col()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.data_utils.read_csv_file"><code class="docutils literal notranslate"><span class="pre">read_csv_file()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#module-modeling.eda">modeling.eda module</a><ul>
@@ -109,11 +119,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#module-modeling.ml_model_dev">modeling.ml_model_dev module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.get_classifier"><code class="docutils literal notranslate"><span class="pre">get_classifier()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.get_imputer"><code class="docutils literal notranslate"><span class="pre">get_imputer()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.get_pca"><code class="docutils literal notranslate"><span class="pre">get_pca()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.get_pipeline_params"><code class="docutils literal notranslate"><span class="pre">get_pipeline_params()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.get_scaler"><code class="docutils literal notranslate"><span class="pre">get_scaler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.ClassificationPipeline"><code class="docutils literal notranslate"><span class="pre">ClassificationPipeline</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.ClassificationPipeline.build_pipeline"><code class="docutils literal notranslate"><span class="pre">ClassificationPipeline.build_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.ClassificationPipeline.set_classifier"><code class="docutils literal notranslate"><span class="pre">ClassificationPipeline.set_classifier()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.ClassificationPipeline.set_imputer"><code class="docutils literal notranslate"><span class="pre">ClassificationPipeline.set_imputer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.ClassificationPipeline.set_pca"><code class="docutils literal notranslate"><span class="pre">ClassificationPipeline.set_pca()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.ClassificationPipeline.set_preprocessor"><code class="docutils literal notranslate"><span class="pre">ClassificationPipeline.set_preprocessor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.ClassificationPipeline.set_transformer"><code class="docutils literal notranslate"><span class="pre">ClassificationPipeline.set_transformer()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.init_and_train_model"><code class="docutils literal notranslate"><span class="pre">init_and_train_model()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.load_mlflow_model"><code class="docutils literal notranslate"><span class="pre">load_mlflow_model()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="modeling.html#modeling.ml_model_dev.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
@@ -145,14 +159,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to ML water potability prediction application’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to WaterPotability’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="app.html" class="btn btn-neutral float-right" title="app module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, AbhishekRS4.</p>
+    <p>&#169; Copyright 2024, AbhishekRS.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
