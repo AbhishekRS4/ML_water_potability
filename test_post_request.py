@@ -30,7 +30,7 @@ def send_post_reqest(ARGS):
     # additional headers to indicate the content type of the post request
 
     # perform 20 post requests
-    for i in range(0, 20):
+    for i in range(0, ARGS.num_requests):
         list_values = list(X_test[i, :])
         encoded_data = dict(zip(list_cols, list_values))
         print(encoded_data)
@@ -42,6 +42,7 @@ def send_post_reqest(ARGS):
 
 def main():
     file_csv = "dataset/water_potability.csv"
+    num_requests = 20
 
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
@@ -49,6 +50,12 @@ def main():
 
     parser.add_argument(
         "--file_csv", default=file_csv, type=str, help="full path to dataset csv file"
+    )
+    parser.add_argument(
+        "--num_requests",
+        default=num_requests,
+        type=int,
+        help="number of post requests to send",
     )
 
     ARGS, unparsed = parser.parse_known_args()
