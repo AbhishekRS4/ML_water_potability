@@ -35,7 +35,7 @@ def get_model_for_prod(ARGS):
 
 
 def main():
-    model_name = "WaterPotability"
+    model_name = "water_potability"
     dir_mlflow_logs = "mlruns"
     dir_model_for_prod = "model_for_production"
 
