@@ -14,7 +14,7 @@ COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY ./modeling/*.py ./modeling/
+# COPY ./modeling/*.py ./modeling/
 COPY ./*.py .
 
 EXPOSE 5000
