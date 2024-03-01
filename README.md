@@ -9,7 +9,7 @@
 
 ## Repo Info
 * This repo contains a water potability Machine Learning FastAPI application deployment
-* For the ML application development, training, and management; MLFlow has been utilized
+* For the MLOps, MLFlow has been utilized
 * For deployment, an API has been developed and deployed using FastAPI and docker
 * For the training, the dataset is split into 90% - 10% for train and test sets respectively
 * For getting the latest model from the mlflow logs for production, use the script [get_model_for_production.py](get_model_for_production.py)
