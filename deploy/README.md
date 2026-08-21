@@ -67,3 +67,7 @@ kubectl delete pod <pod_name>
 ```
 python3 test_post_request.py
 ```
+* To further scale the deployment to increase or decrease the pods
+```
+kubectl scale deployment ml-water-potability-backend-deploy --replicas=10
+```
