@@ -14,9 +14,9 @@
 * For the training, the dataset is split into 90% - 10% for train and test sets respectively
 * For getting the latest model from the mlflow logs for production, use the script [get_model_for_production.py](get_model_for_production.py)
 * The python packages are listed in [requirements.txt](requirements.txt)
-* The docker container can be deployed using [Dockerfile](Dockerfile)
+* The docker container can be deployed using [backend_app/Dockerfile](backend_app/Dockerfile)
 * For training and logging the model, use the [modeling/ml_model_dev.py](modeling/ml_model_dev.py) script
-* The FastAPI app deployment code is in [app.py](app.py) script
+* The FastAPI app deployment code is in [backend_app/app.py](backend_app/app.py) script
 * To test the deployed FastAPI app on a local machine, the [test_post_request.py](test_post_request.py) script can be used
 
 
@@ -33,7 +33,8 @@ docker run -p 5000:5000 -t ml-water-potability-backend
 
 
 ## Kubernetes deployment instructions on a local machine
-* To deploy the container on a kubernetes cluster, refer [kubernetes_deployment/README.md](kubernetes_deployment/README.md)
+* To deploy the container on a kubernetes cluster, refer [deploy/README.md](deploy/README.md) for detailed instructions
+* Alternatively, run [deploy/start_deployment.sh](deploy/start_deployment.sh) for starting the deployment
 
 
 ## HuggingFace deployment
