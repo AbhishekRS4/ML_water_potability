@@ -23,7 +23,7 @@ def send_post_reqest(ARGS):
     X_test, Y_test = water_pot_dataset.get_data_from_data_frame(which_set="test")
     print(X_test.shape)
 
-    url = "http://0.0.0.0:5000/predict"
+    url = ARGS.url
     # the endpoint of the post request
 
     headers = {"Content-type": "application/json"}
@@ -56,6 +56,16 @@ def main():
         default=num_requests,
         type=int,
         help="number of post requests to send",
+    )
+    parser.add_argument(
+        "--url",
+        default="http://0.0.0.0:5000/predict",
+        choices=[
+            "http://ml-water-potability-backend-deploy.local/predict", # for kubernetes scaled deployment
+            "http://0.0.0.0:5000/predict", # for docker deployment
+        ],
+        type=str,
+        help="URL path for the prediction service"
     )
 
     ARGS, unparsed = parser.parse_known_args()
