@@ -1,21 +1,28 @@
-FROM python:3.8.10-slim
+# Build from repo root:
+#   docker build -f backend_app/Dockerfile -t ml-water-potability-backend .
+
+FROM python:3.10-slim
 
 WORKDIR /app
 
 # install linux package dependencies
-RUN apt-get update -y
-RUN apt-get install -y libgomp1
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends libgomp1 && \
+    rm -rf /var/lib/apt/lists/*
 
-# can copy files only from current working directory where docker builds
-# cannot copy files from arbitrary directories
+# install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-COPY ./model_for_production/ /data/model_for_production
-COPY ./requirements.txt .
+# copy pyproject.toml and uv.lock from repo root for reproducible dependency installation
+COPY pyproject.toml uv.lock ./
 
-RUN pip install -r requirements.txt
+# install backend dependencies using uv (into the system Python, no venv)
+RUN uv sync --group dev-backend --no-install-project
 
-# COPY ./modeling/*.py ./modeling/
-COPY ./*.py .
+ENV PATH="/app/.venv/bin:$PATH"
+
+COPY backend_app/model_for_production/ /data/model_for_production
+COPY backend_app/*.py .
 
 EXPOSE 5000
 
