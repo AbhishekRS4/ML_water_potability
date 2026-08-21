@@ -71,3 +71,36 @@ python3 test_post_request.py
 ```
 kubectl scale deployment ml-water-potability-backend-deploy --replicas=10
 ```
+
+## Architecture for deployment
++-------------+
+|Python / curl|
++-------------+
+      |
+      | http://ml-water-potability-backend-deploy.local/predict
+      |
+      v
++-------------+
+|127.0.0.1:80 |
++-------------+
+      |
+      | kind port mapping
+      v
++--------------------------+
+| NGINX Ingress Controller |
++--------------------------+
+            |
+            | Host:
+            | ml-water-potability-backend-deploy.local
+            v
++-------------------------+
+| Kubernetes Service      |
+| port: 5000              |
++-------------------------+
+    |         |         |
+    |         |         |
+    v         v         v
++------+  +------+   +------+
+| Pod 1|  | Pod 2|   | Pod 3|
+| :5000|  | :5000|   | :5000|
++------+  +------+   +------+
