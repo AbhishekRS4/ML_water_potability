@@ -1,23 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fastapi-water-potability-deployment
+  name: ml-water-potability-backend-deploy
   # do not use _, instead use -
 spec:
-  replicas: 1
+  replicas: 3
+
+  # all pods with app="ml-water-potability-backend-deploy" belong to this deployment
   selector:
-  # all pods with app="fastapi_water_potability" belong to this deployment
     matchLabels:
-      app: fastapi-water-potability
+      app: ml-water-potability-backend-deploy
+
+  # each pod gets label app="ml-water-potability-backend-deploy"
   template:
-  # each pod gets label app="fastapi_water_potability"
     metadata:
       labels:
-        app: fastapi-water-potability
+        app: ml-water-potability-backend-deploy
+    
     spec:
       containers:
-      - name: fastapi-water-potability-pod
-        image: fastapi_water_potability:latest
+      - name: ml-water-potability-backend-pod
+        image: ml-water-potability-backend:latest
         imagePullPolicy: Never
         # set image pull policy to never whenever use image:latest
         # otherwise, by default it tries to pull image from docker.io

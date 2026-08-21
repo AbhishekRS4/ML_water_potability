@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ml-water-potability-backend-deploy
+spec:
+  ingressClassName: nginx
+
+  rules:
+    - host: ml-water-potability-backend-deploy.local
+
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+
+            backend:
+              service:
+                name: ml-water-potability-backend-deploy
+                port:
+                  number: 5000

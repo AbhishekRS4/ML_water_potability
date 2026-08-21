@@ -1,11 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: fastapi-water-potability
+  name: ml-water-potability-backend-deploy
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+
   selector:
-    app: fastapi-water-potability
+    app: ml-water-potability-backend-deploy
+  
   ports:
-  - port: 80
+  - protocol: TCP
+    port: 5000
     targetPort: 5000
