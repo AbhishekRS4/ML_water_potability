@@ -17,6 +17,7 @@
 * The docker container can be deployed using [backend_app/Dockerfile](backend_app/Dockerfile)
 * For training and logging the model, use the [modeling/ml_model_dev.py](modeling/ml_model_dev.py) script
 * The FastAPI app deployment code is in [backend_app/app.py](backend_app/app.py) script
+* The Kubernetes deployment configuration files can be found in [deploy/](deploy/)
 * To test the deployed FastAPI app on a local machine, the [test_post_request.py](test_post_request.py) script can be used
 
 
