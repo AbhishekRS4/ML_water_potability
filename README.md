@@ -20,14 +20,15 @@
 * To test the deployed FastAPI app on a local machine, the [test_post_request.py](test_post_request.py) script can be used
 
 
-## Docker deployment instructions on a local machine
-* To build the container, run the following command
+## Docker deployment of backend app on a local machine
+* To build the container for the backend app, run the following command from the repo root
 ```
-docker build -t fastapi_water_potability .
+docker build -f backend_app/Dockerfile -t ml-water-potability-backend .
 ```
-* To the run the container, run the following command
+* Use `--no-cache` in the above command to build the image without using cached layers
+* To the run the container with the backend app, run the following command
 ```
-docker run -p 5000:5000 -t fastapi_water_potability
+docker run -p 5000:5000 -t ml-water-potability-backend
 ```
 
 
