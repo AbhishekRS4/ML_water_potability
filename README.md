@@ -7,10 +7,10 @@
 * The dataset sample contains about 3.2K samples
 
 
-## Repo Info
+## Project Info
 * This repo contains a water potability Machine Learning FastAPI application deployment
-* For the MLOps, MLFlow has been utilized
-* For deployment, an API has been developed and deployed using FastAPI and docker
+* For the MLOps - MLFlow, FastAPI, Docker, Kubernetes has been utilized
+* For deployment, an ML backend API app has been developed and deployed using FastAPI, docker, kubernetes
 * For the training, the dataset is split into 90% - 10% for train and test sets respectively
 * For getting the latest model from the mlflow logs for production, use the script [get_model_for_production.py](get_model_for_production.py)
 * The python packages are listed in [requirements.txt](requirements.txt)
@@ -19,9 +19,10 @@
 * The FastAPI app deployment code is in [backend_app/app.py](backend_app/app.py) script
 * The Kubernetes deployment configuration files can be found in [deploy/](deploy/)
 * To test the deployed FastAPI app on a local machine, the [test_post_request.py](test_post_request.py) script can be used
+* This project involved learning kubernetes scaling of the deployed ML service app
 
 
-## Docker deployment of backend app on a local machine
+## Docker deployment of ML backend app on a local machine
 * To build the container for the backend app, run the following command from the repo root
 ```
 docker build -f backend_app/Dockerfile -t ml-water-potability-backend .
@@ -33,7 +34,7 @@ docker run -p 5000:5000 -t ml-water-potability-backend
 ```
 
 
-## Kubernetes deployment instructions on a local machine
+## Kubernetes deployment of ML backend app on a local machine
 * To deploy the container on a kubernetes cluster, refer [deploy/README.md](deploy/README.md) for detailed instructions
 * Alternatively, run [deploy/start_deployment.sh](deploy/start_deployment.sh) for starting the deployment
 
