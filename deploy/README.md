@@ -73,34 +73,21 @@ kubectl scale deployment ml-water-potability-backend-deploy --replicas=10
 ```
 
 ## Architecture for deployment
-+-------------+
-|Python / curl|
-+-------------+
-      |
-      | http://ml-water-potability-backend-deploy.local/predict
-      |
-      v
-+-------------+
-|127.0.0.1:80 |
-+-------------+
-      |
-      | kind port mapping
-      v
-+--------------------------+
-| NGINX Ingress Controller |
-+--------------------------+
-            |
-            | Host:
-            | ml-water-potability-backend-deploy.local
-            v
-+-------------------------+
-| Kubernetes Service      |
-| port: 5000              |
-+-------------------------+
-    |         |         |
-    |         |         |
-    v         v         v
-+------+  +------+   +------+
-| Pod 1|  | Pod 2|   | Pod 3|
-| :5000|  | :5000|   | :5000|
-+------+  +------+   +------+
+
+```mermaid
+flowchart TD
+    A["Python / curl"]
+    B["127.0.0.1:80"]
+    C["NGINX Ingress Controller"]
+    D["Kubernetes Service\nport: 5000"]
+    E["Pod 1\n:5000"]
+    F["Pod 2\n:5000"]
+    G["Pod 3\n:5000"]
+
+    A -->|"http://ml-water-potability-backend-deploy.local/predict"| B
+    B -->|"kind port mapping"| C
+    C -->|"Host: ml-water-potability-backend-deploy.local"| D
+    D --> E
+    D --> F
+    D --> G
+```
