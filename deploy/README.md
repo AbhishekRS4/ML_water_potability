@@ -1,9 +1,11 @@
 # Deployment with kubernetes (locally)
 
 ## Deployment to kubernetes cluster
-* The 2 config files [deployment.yaml](deployment.yaml) and [service.yaml](service.yaml) can be used for deploying to kubernetes cluster
+* The following config files [deployment.yaml](deployment.yaml), [ingress.yaml](ingress.yaml), [kind-config.yaml](kind-config.yaml) and [service.yaml](service.yaml) can be used for deploying to kubernetes cluster
+* For scaling, set the replicas in [deployment.yaml](deployment.yaml)
+* Since, the deployment is tested locally, kind is utilized since it is fast and is light-weight
 
-## Instructions to setup kubernetes cluster (locally) and deploying the docker image with the FastAPI ML application to the kubernetes cluster
+## Instructions to setup kubernetes kind cluster (locally) and deploying the docker image with the FastAPI ML application to the kubernetes cluster
 * Install [kubectl](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html) and [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)
 * Delete any default kind cluster that may be already be running
 ```
@@ -72,7 +74,10 @@ python3 test_post_request.py
 kubectl scale deployment ml-water-potability-backend-deploy --replicas=10
 ```
 
-## Architecture for deployment
+## Alternative way of running the deployment
+* Run the script [start_deployment.sh](start_deployment.sh) from project root dir for running the deployment with default scaling
+
+## Architecture of the deployment
 
 ```mermaid
 flowchart TD
