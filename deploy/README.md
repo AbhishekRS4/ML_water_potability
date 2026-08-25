@@ -1,6 +1,7 @@
 # Deployment with kubernetes (locally)
 
-## Deployment to kubernetes cluster
+## Kubernetes deployment
+* The deployment architecture used in this project is Serverful (Raw deployment)
 * The following config files [deployment.yaml](deployment.yaml), [ingress.yaml](ingress.yaml), [kind-config.yaml](kind-config.yaml) and [service.yaml](service.yaml) can be used for deploying to kubernetes cluster
 * For scaling, set the replicas in [deployment.yaml](deployment.yaml)
 * Since, the deployment is tested locally, kind is utilized since it is fast and is light-weight
@@ -77,7 +78,7 @@ kubectl scale deployment ml-water-potability-backend-deploy --replicas=10
 ## Alternative way of running the deployment
 * Run the script [start_deployment.sh](start_deployment.sh) from project root dir for running the deployment with default scaling
 
-## Architecture of the deployment
+## Serverful architecture of the deployment
 
 ```mermaid
 flowchart TD
