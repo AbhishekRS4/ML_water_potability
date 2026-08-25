@@ -19,7 +19,7 @@
 * The FastAPI app deployment code is in [backend_app/app.py](backend_app/app.py) script
 * The Kubernetes deployment configuration files can be found in [deploy/](deploy/)
 * To test the deployed FastAPI app on a local machine, the [test_post_request.py](test_post_request.py) script can be used
-* This project involved learning kubernetes scaling of the deployed ML service app
+* This project involved learning orchestrating the scaling of the deployed ML service app with kubernetes
 
 
 ## Docker deployment of ML backend app on a local machine
