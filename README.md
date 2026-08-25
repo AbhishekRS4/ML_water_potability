@@ -36,7 +36,7 @@ docker run -p 5000:5000 -t ml-water-potability-backend
 
 ## Kubernetes deployment of ML backend app on a local machine
 * To deploy the container on a kubernetes cluster, refer [deploy/README.md](deploy/README.md) for detailed instructions
-* Alternatively, run [deploy/start_deployment.sh](deploy/start_deployment.sh) for starting the deployment
+* Alternatively, run [deploy/start_deployment.sh](deploy/start_deployment.sh) for starting the kubernetes deployment
 
 
 ## HuggingFace deployment
