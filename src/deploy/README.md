@@ -16,6 +16,10 @@ kind delete cluster --name kind
 ```
 kind create cluster --name kind
 ```
+* Get a list of clusters
+```
+kubectl config get-clusters
+```
 * To check the cluster info, run the following commands
 ```
 kubectl cluster-info --context kind-kind
